@@ -1,0 +1,41 @@
+version: '3'
+
+services:
+    web:
+        platform: linux/x86_64
+        container_name: ps8-web
+        image: prestashop/prestashop:8.2.1-apache
+        networks:
+            - ps-net
+        volumes:
+            - ps8-web:/var/www/html
+        depends_on:  
+            - db
+        ports:
+            - "80:80"
+        environment:
+            - DB_SERVER=ps8-db
+            - PS_DEV_MODE=true
+            - PS_FOLDER_ADMIN=admin-dev
+    db:
+        platform: linux/x86_64
+        container_name: ps8-db
+        image: mariadb
+        tty: true
+        networks:
+            - ps-net
+        volumes:
+            - ps8-db:/var/lib/mysql
+        ports:
+            - "3306:3306"
+        environment:
+            - MYSQL_DATABASE=ps8_db
+            - MYSQL_ROOT_PASSWORD=admin
+networks:
+    ps-net:
+
+volumes:
+    ps8-db:
+        driver: local
+    ps8-web:
+        driver: local
