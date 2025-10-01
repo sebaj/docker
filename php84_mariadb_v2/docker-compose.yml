@@ -1,0 +1,33 @@
+services:
+    web:
+        platform: linux/x86_64
+        build:
+          context: ./
+        container_name: ${APPNAME}-web
+        image: php-custom
+        ports:
+            - "8080:80"
+        networks:
+            - php-net
+        volumes:
+            - ./src:/var/www/html
+    db:
+        platform: linux/x86_64
+        container_name: ${APPNAME}-db
+        image: mariadb
+        restart: always
+        networks:
+            - php-net
+        volumes:
+            - vol-db:/var/lib/mysql
+        environment:
+            - MYSQL_DATABASE=${DB_DATABASE}
+            - MYSQL_ROOT_PASSWORD=${DB_PASSWORD}
+        ports:
+            - "3306:3306"
+networks:
+    php-net:
+
+volumes:
+    vol-db:
+        driver: local
