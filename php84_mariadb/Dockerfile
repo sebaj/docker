@@ -31,6 +31,12 @@ RUN unzip *.zip \
 	&& mv */* . \
 	&& rm -rf PrestaShop*
 
+RUN unzip *.zip \
+	&& rm *.zip \
+	&& cd PrestaShop* \
+	&& shopt -s dotglob && mv * .. && shopt -u dotglob \
+	&& cd .. && rm -rf PrestaShop*
+
 RUN chown -R www-data:www-data .
  
 RUN a2enmod rewrite
