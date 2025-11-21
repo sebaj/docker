@@ -1,0 +1,34 @@
+services:
+  prestashop:
+    image: prestashop/prestashop:9.0.1-apache
+    container_name: prestashop_store
+    ports:
+      - "8080:80"
+    links:
+      - db:mysql
+    depends_on:
+      - db
+    volumes:
+      - ./data:/var/www/html # Persistencia de archivos
+      - ./modules:/var/www/html/modules # Para desarrollar tus módulos cómodamente desde fuera
+      - ./themes:/var/www/html/themes # Para editar temas desde fuera
+    environment:
+      - DB_SERVER=db
+      - PS_DEV_MODE=true
+      - PS_FOLDER_ADMIN=admin-dev
+  db:
+    image: mariadb:10.6
+    container_name: prestashop_db
+    command: --max_allowed_packet=64M
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=admin
+      - MYSQL_DATABASE=prestashop
+      - MYSQL_USER=prestashop
+      - MYSQL_PASSWORD=prestashop
+    volumes:
+      - db_data:/var/lib/mysql
+
+volumes:
+  db_data:
